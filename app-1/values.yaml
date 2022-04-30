@@ -1,0 +1,12 @@
+deployment:
+  replicaCount: 1
+  name: nginx-deployment
+  image:
+    app: nginx
+    version: latest
+
+service:
+  name: my-service
+  type: LoadBalancer
+  port: 80
+  targetPort: 80
