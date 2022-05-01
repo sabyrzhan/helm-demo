@@ -17,7 +17,7 @@ spec:
       containers:
         - name: "{{ .Values.deployment.image.app }}"
           image: "{{ .Values.deployment.image.app }}:{{ .Values.deployment.image.version }}"
-          imagePullPolicy: always
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 80
