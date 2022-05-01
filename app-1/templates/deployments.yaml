@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.name }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels: {{- include "labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "labels" . | nindent 8 }}
+    spec:
+      containers:
+      {{- range $container := .Values.deployment.containers }}
+      {{- if eq $container.enabled true }}
+        - name: "{{ $container.name }}"
+          image: "{{ $container.image.app }}:{{ $container.image.version }}"
+          imagePullPolicy: Always
+      {{- end }}
+      {{- end }}
+
+{{ if eq .Values.service_nginx.enabled true }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service_nginx.name }}
+  labels: {{- include "labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service_nginx.type }}
+  ports:
+    - port: {{ .Values.service_nginx.port }}
+      targetPort: {{ .Values.service_nginx.targetPort}}
+      protocol: TCP
+      name: http
+  selector: {{- include "labels" . | nindent 4 }}
+{{ end }}
+
+{{ if eq .Values.service_tomcat.enabled true }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service_tomcat.name }}
+  labels: {{- include "labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service_tomcat.type }}
+  ports:
+    - port: {{ .Values.service_tomcat.port }}
+      targetPort: {{ .Values.service_tomcat.targetPort}}
+      protocol: TCP
+      name: http
+  selector: {{- include "labels" . | nindent 4 }}
+{{ end }}
+
+{{ if eq .Values.service_tomcat_admin.enabled true }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service_tomcat_admin.name }}
+  labels: {{- include "labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service_tomcat_admin.type }}
+  ports:
+    - port: {{ .Values.service_tomcat_admin.port }}
+      targetPort: {{ .Values.service_tomcat_admin.targetPort}}
+      protocol: TCP
+      name: http
+  selector: {{- include "labels" . | nindent 4 }}
+
+{{ end }}

@@ -1,0 +1,33 @@
+deployment:
+  replicaCount: 1
+  name: replica-1-deployment
+  containers:
+    - name: nginx
+      enabled: true
+      image:
+        app: nginx
+        version: latest
+    - name: tomcat
+      enabled: true
+      image:
+        app: tomcat
+        version: latest
+
+service_nginx:
+  enabled: true
+  name: nginx-service-replica-1
+  type: LoadBalancer
+  port: 80
+  targetPort: 80
+service_tomcat:
+  enabled: true
+  name: tomcat-service-replica-1
+  type: LoadBalancer
+  port: 8080
+  targetPort: 8080
+service_tomcat_admin:
+  enabled: true
+  name: tomcat-service-admin-replica-1
+  type: LoadBalancer
+  port: 8081
+  targetPort: 8081
